@@ -7,15 +7,7 @@ using System.Threading.Tasks;
 namespace Logic
 {
     public static class SquareRootMethod
-    {
-        private void initS ( ref double[, ] s, int n )
-        {
-            for (int i = 0; i < n; ++i)
-                for (int j = 0; j < n; ++j)
-                    s[i, j] = 0;
-        }
-
-        
+    {   
         public static double[] ToSolve( double[,] matrix, int n, double[] f )
         {
             double temp = 0;
@@ -23,13 +15,19 @@ namespace Logic
             double[] y = new double[n];
             double[] d = new double[n];
             double[,] s = new double[n, n];
+            for (int i = 0; i < n; ++i)
+                for (int j = 0; j < n; ++j)
+                    s[i, j] = 0;
             for ( int i = 0; i < n; ++i )
             {
                 temp = 0;
-                for ( int k = 0; k < i; ++k)
+                for ( int k = 0; k < i; ++k )
                     temp += s[k, i] * s[k, i] * d[k];
-                d[i] = matrix[i, i] - Math.Sign( ( Math.Abs( temp ) ) );
-                s[i, i] = Math.Sqrt( Math.Abs( matrix[i, i] -  temp ) );
+                if (Math.Round(matrix[i, i] - (Math.Abs(Math.Round(temp, 1))), 1) >= 0)
+                    d[i] = 1;
+                else
+                    d[i] = -1;
+                s[i, i] = Math.Sqrt( Math.Abs(matrix[i, i] -  temp) );
                 for ( int j = i + 1; j < n; ++j )
                 {
                     temp = 0;
@@ -57,7 +55,7 @@ namespace Logic
             {
                 temp = 0;
                 for ( int j = i + 1; j < n; ++j )
-                    temp += s[j, i] * x[j];
+                    temp += s[i, j] * x[j];
                 x[i] = ( y[i] -  temp )/s[i, i];
             }
 
